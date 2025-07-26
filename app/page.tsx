@@ -88,7 +88,6 @@ export default function Dashboard() {
 
   // Handle Google Sheets data updates
   const handleGoogleSheetsUpdate = (data: { teams: any[], gameNames: any }) => {
-    console.log("Received data from Google Sheets:", data)
     if (data.teams.length === 0) return
 
     // Extract sports from the gameNames object

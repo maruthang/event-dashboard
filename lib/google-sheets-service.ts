@@ -46,7 +46,6 @@ export class GoogleSheetsService {
       const range = "Sheet1!A1:ZZ1000" // Large range to handle many columns and rows
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.SHEET_ID}/values/${range}?key=${this.API_KEY}`
 
-      console.log("Fetching data from:", url)
 
       const response = await fetch(url)
 
@@ -64,11 +63,8 @@ export class GoogleSheetsService {
       }
 
       const data = await response.json()
-      console.log("Raw API Response:", data)
-      console.log("Number of rows received:", data.values?.length || 0)
+
       if (data.values && data.values.length > 0) {
-        console.log("Number of columns in first row:", data.values[0].length)
-        console.log("First row headers:", data.values[0])
       }
 
       if (!data.values || data.values.length === 0) {
@@ -94,7 +90,6 @@ export class GoogleSheetsService {
       console.error("Error fetching Google Sheets data:", error)
 
       // Return fallback data instead of throwing error
-      console.log("Using fallback data due to error")
       const fallbackData = this.getFallbackData()
       return {
         teams: fallbackData,
@@ -216,7 +211,6 @@ export class GoogleSheetsService {
 
   // Parse the raw sheet data into our team format
   private parseSheetData(values: string[][]): { teams: TeamData[], gameNames: GameNames } {
-    console.log("Parsing sheet data:", values)
 
     if (values.length < 2) {
       console.warn("Not enough data rows, using fallback")
@@ -239,21 +233,16 @@ export class GoogleSheetsService {
     const headers = values[0] // First row contains game names
     const rows = values.slice(1) // Skip header row
 
-    console.log("Game names (headers):", headers)
-    console.log("Data rows:", rows)
-
     // Extract game names from headers
     const gameNames: GameNames = {}
     for (let i = 1; i < headers.length; i++) {
       const originalName = headers[i]?.trim() || `Game ${i}`
       gameNames[originalName] = originalName
     }
-    console.log("Extracted game names:", gameNames)
 
     const teams = rows
       .filter((row) => row[0] && row[0].trim()) // Filter out empty rows
       .map((row, index) => {
-        console.log(`Processing team row ${index + 1}:`, row)
         // Create a dynamic games object based on the headers
         const games: Record<string, number> = {}
         
@@ -263,7 +252,6 @@ export class GoogleSheetsService {
           // If the score is missing, fill with 0
           const score = row[i] !== undefined && row[i] !== null && row[i] !== '' ? this.parseScore(row[i], gameName) : 0;
           games[gameName] = score;
-          console.log(`  Game: ${gameName}, Score: ${score}, Original header: ${headers[i]}`)
         }
 
         const teamData: TeamData = {
@@ -280,7 +268,6 @@ export class GoogleSheetsService {
           // Add dynamic games to the team data
           ...games
         }
-        console.log(`Parsed team ${index + 1}:`, teamData)
         return teamData
       })
 
@@ -325,7 +312,6 @@ export class GoogleSheetsService {
     if (this.isPolling) return
 
     this.isPolling = true
-    console.log("Starting polling every", intervalMs, "ms")
 
     setInterval(async () => {
       try {
