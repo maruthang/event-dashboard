@@ -109,13 +109,13 @@ export default function Dashboard() {
           games[gameKey] = teamData[gameKey] || 0
         }
       })
-      
+
       // Set center image based on team name
       const teamName = teamData.name || `Team ${index + 1}`
       let centerImage = teamData.photo2 || "/placeholder.svg?height=60&width=60"
       let leftImage = teamData.photo1 || "/placeholder.svg?height=60&width=60"
       let rightImage = teamData.photo3 || "/placeholder.svg?height=60&width=60"
-      
+
       if (teamName === "SkyReach") {
         centerImage = "/shastipriyan.jpeg"
         leftImage = "/soorya.jpeg"
@@ -149,7 +149,7 @@ export default function Dashboard() {
         leftImage = "/avinash.png"
         rightImage = "/kalashree.jpeg"
       }
-      
+
       return {
         id: teamData.id || index + 1,
         name: teamName,
@@ -436,8 +436,52 @@ export default function Dashboard() {
                   onClick={() => setSelectedTeam(team)}
                 >
                   <Card className="bg-[#094F94]/90 border-[#094F94]/50 backdrop-blur-sm hover:bg-[#094F94] transition-all duration-300 transform hover:scale-105">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
+                    <CardContent className="p-4 sm:p-6">
+                      {/* Mobile Layout */}
+                      <div className="block sm:hidden">
+                        {/* Team Photos - Top */}
+                        <div className="flex justify-center mb-3">
+                          <div className="flex justify-center -space-x-2">
+                            {team.memberPhotos.map((photo, idx) => (
+                              <div
+                                key={idx}
+                                className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300"
+                              >
+                                <img
+                                  src={photo || "/placeholder.svg"}
+                                  alt={`Team member ${idx + 1}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Team Name - Middle */}
+                        <div className="text-center mb-4">
+                          <h3 className="text-xl font-bold text-white">{team.name}</h3>
+                        </div>
+
+                        {/* Rank and Points - Bottom */}
+                        <div className="flex items-center justify-center space-x-4">
+                          {/* Rank */}
+                          <div className="bg-blue-700/50 rounded-lg p-2 text-center min-w-[60px]">
+                            <div className="text-xs text-blue-200 mb-1">Rank</div>
+                            <div className="text-xl font-bold text-cyan-400">{team.currentRank}</div>
+                          </div>
+
+                          {/* Points */}
+                          <div className="bg-blue-700/50 rounded-lg p-2 text-center min-w-[60px]">
+                            <div className="text-xs text-blue-200 mb-1">Points</div>
+                            <div className="text-xl font-bold text-cyan-400">
+                              {calculateTeamTotal(team.games)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Desktop Layout */}
+                      <div className="hidden sm:flex items-center justify-between">
                         {/* Rank */}
                         <div className="bg-blue-700/50 rounded-lg p-3 min-w-[80px] text-center">
                           <div className="text-sm text-blue-200 mb-1">Rank</div>
