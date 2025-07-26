@@ -65,12 +65,18 @@ function normalizeKey(key: string) {
 }
 
 function getGameMaxPoints(game: string) {
-  const norm = normalizeKey(game);
-  // Try direct normalized match
-  const foundKey = Object.keys(GAME_MAX_POINTS).find(
-    k => normalizeKey(k) === norm
-  );
-  return foundKey ? GAME_MAX_POINTS[foundKey] : 5;
+  const key = game.trim().toLowerCase();
+  // Use the same logic as CUSTOM_GAME_SCORES in utils.ts
+  const customScores: Record<string, number> = {
+    alangkar: 10,
+    "social media": 10,
+    "photo contest": 10,
+    carrom: 15,
+    chess: 15,
+    rangoli: 10,
+    "treasure hunt": 10,
+  };
+  return customScores.hasOwnProperty(key) ? customScores[key] : 5;
 }
 
 export default function Dashboard() {
@@ -356,7 +362,7 @@ export default function Dashboard() {
                         <div className="flex justify-center -mt-14 mb-4 z-10 relative">
                           <div className="flex justify-center items-center -space-x-4">
                             {/* Left Image (small) */}
-                            <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300">
+                            <div className="w-16 h-16 rounded-full border-2 border-white overflow-hidden bg-gray-300">
                               <img
                                 src={team.memberPhotos[0] || "/placeholder.svg"}
                                 alt="Team member 1"
@@ -365,7 +371,7 @@ export default function Dashboard() {
                             </div>
 
                             {/* Center Image (larger) */}
-                            <div className="w-16 h-16 rounded-full border-4 border-white overflow-hidden bg-gray-300 z-10">
+                            <div className="w-20 h-20 rounded-full border-4 border-white overflow-hidden bg-gray-300 z-10">
                               <img
                                 src={team.memberPhotos[1] || "/placeholder.svg"}
                                 alt="Team member 2"
@@ -374,7 +380,7 @@ export default function Dashboard() {
                             </div>
 
                             {/* Right Image (small) */}
-                            <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300">
+                            <div className="w-16 h-16 rounded-full border-2 border-white overflow-hidden bg-gray-300">
                               <img
                                 src={team.memberPhotos[2] || "/placeholder.svg"}
                                 alt="Team member 3"
@@ -447,7 +453,7 @@ export default function Dashboard() {
                             {team.memberPhotos.map((photo, idx) => (
                               <div
                                 key={idx}
-                                className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-gray-300"
+                                className="w-16 h-16 rounded-full border-2 border-white overflow-hidden bg-gray-300"
                               >
                                 <img
                                   src={photo || "/placeholder.svg"}
@@ -516,7 +522,7 @@ function TeamDetails({ team, sports, onBack }: { team: Team; sports: Sport[]; on
               <div className="flex justify-center -mt-14 mb-4 z-10 relative">
                 <div className="flex justify-center items-center -space-x-4">
                   {/* Left Image (small) */}
-                  <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300">
+                  <div className="w-16 h-16 rounded-full border-2 border-white overflow-hidden bg-gray-300">
                     <img
                       src={team.memberPhotos[0] || "/placeholder.svg"}
                       alt="Team member 1"
@@ -525,7 +531,7 @@ function TeamDetails({ team, sports, onBack }: { team: Team; sports: Sport[]; on
                   </div>
 
                   {/* Center Image (larger) */}
-                  <div className="w-16 h-16 rounded-full border-4 border-white overflow-hidden bg-gray-300 z-10">
+                  <div className="w-20 h-20 rounded-full border-4 border-white overflow-hidden bg-gray-300 z-10">
                     <img
                       src={team.memberPhotos[1] || "/placeholder.svg"}
                       alt="Team member 2"
@@ -534,7 +540,7 @@ function TeamDetails({ team, sports, onBack }: { team: Team; sports: Sport[]; on
                   </div>
 
                   {/* Right Image (small) */}
-                  <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300">
+                  <div className="w-16 h-16 rounded-full border-2 border-white overflow-hidden bg-gray-300">
                     <img
                       src={team.memberPhotos[2] || "/placeholder.svg"}
                       alt="Team member 3"

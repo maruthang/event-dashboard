@@ -14,6 +14,7 @@ const CUSTOM_GAME_SCORES: Record<string, number> = {
   chess: 15,
   rangoli: 10,
   "treasure hunt": 10,
+  // All other games default to 5 points
 };
 
 /**
@@ -26,10 +27,13 @@ export function calculateTeamTotal(games: Record<string, number>): number {
   let total = 0;
   for (const [game, value] of Object.entries(games)) {
     const key = game.trim().toLowerCase();
+    // Get the max points for this game (default to 5 if not found)
     const max = CUSTOM_GAME_SCORES.hasOwnProperty(key)
       ? CUSTOM_GAME_SCORES[key]
       : 5;
-    total += Math.min(value, max); // sum the actual score, capped at max
+    
+    // Add the actual score (not capped) - this allows scores to exceed max
+    total += value || 0;
   }
-  return Math.min(total, 100);
+  return Math.min(total, 100); // Only cap the total at 100
 }

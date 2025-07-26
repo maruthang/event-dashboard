@@ -261,7 +261,7 @@ export class GoogleSheetsService {
         for (let i = 1; i < headers.length; i++) {
           const gameName = headers[i]?.trim() || `game${i}`
           // If the score is missing, fill with 0
-          const score = row[i] !== undefined && row[i] !== null && row[i] !== '' ? this.parseScore(row[i]) : 0;
+          const score = row[i] !== undefined && row[i] !== null && row[i] !== '' ? this.parseScore(row[i], gameName) : 0;
           games[gameName] = score;
           console.log(`  Game: ${gameName}, Score: ${score}, Original header: ${headers[i]}`)
         }
@@ -287,11 +287,32 @@ export class GoogleSheetsService {
     return { teams, gameNames }
   }
 
-  // Parse and validate score (0-5 range)
-  private parseScore(value: string | undefined): number {
+  // Parse and validate score with game-specific max points
+  private parseScore(value: string | undefined, gameName?: string): number {
     if (!value || value.trim() === "") return 0
     const score = Number.parseInt(value.toString().trim())
-    return Math.max(0, Math.min(5, isNaN(score) ? 0 : score))
+    const actualScore = Math.max(0, isNaN(score) ? 0 : score)
+    
+    // If no game name provided, don't cap
+    if (!gameName) return actualScore
+    
+    // Define max points for each game
+    const gameMaxPoints: Record<string, number> = {
+      alangkar: 10,
+      "social media": 10,
+      "photo contest": 10,
+      carrom: 15,
+      chess: 15,
+      rangoli: 10,
+      "treasure hunt": 10,
+    }
+    
+    // Normalize game name for comparison
+    const normalizedGameName = gameName.trim().toLowerCase()
+    const maxPoints = gameMaxPoints[normalizedGameName] || 5
+    
+    // Cap the score at the game's maximum
+    return Math.min(actualScore, maxPoints)
   }
 
   // Subscribe to data updates
